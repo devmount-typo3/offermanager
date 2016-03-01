@@ -1,0 +1,22 @@
+<T3DataStructure>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Optionen</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <settings.limit>
+            <TCEforms>
+              <label>Limit</label>
+                <config>
+                   <type>input</type>
+                </config>
+            </TCEforms>
+          </settings.limit>   
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>

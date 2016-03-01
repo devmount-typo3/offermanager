@@ -1,0 +1,82 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Anzeige</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <settings.title>
+            <TCEforms>
+              <label>Titel</label>
+                <config>
+                   <type>input</type>
+                </config>
+            </TCEforms>
+          </settings.title>
+          <settings.contact>
+            <TCEforms>
+              <label>Diesen Kontakt anzeigen</label>
+                <config>
+                  <type>select</type>
+                  <items type="array">
+                    <numIndex index="0" type="array">
+                      <numIndex index="0">—</numIndex>
+                      <numIndex index="1"></numIndex>
+                    </numIndex>
+                  </items>
+                  <foreign_table>tx_cal_organizer</foreign_table>
+                  <foreign_table_where>
+                     AND tx_cal_organizer.deleted = 0
+                     AND tx_cal_organizer.hidden = 0
+                  </foreign_table_where>
+                </config>
+            </TCEforms>
+          </settings.contact>
+          <settings.color>
+            <TCEforms>
+              <label>Farbe der Überschrift</label>
+                <config>
+                  <type>select</type>
+                  <items type="array">
+                    <numIndex index="0" type="array">
+                      <numIndex index="0">—</numIndex>
+                      <numIndex index="1"></numIndex>
+                    </numIndex>
+                    <numIndex index="1" type="array">
+                      <numIndex index="0">Grün</numIndex>
+                      <numIndex index="1">green</numIndex>
+                    </numIndex>
+                    <numIndex index="2" type="array">
+                      <numIndex index="0">Rot</numIndex>
+                      <numIndex index="1">red</numIndex>
+                    </numIndex>
+                    <numIndex index="3" type="array">
+                      <numIndex index="0">Blau</numIndex>
+                      <numIndex index="1">blue</numIndex>
+                    </numIndex>
+                    <numIndex index="4" type="array">
+                      <numIndex index="0">Violett</numIndex>
+                      <numIndex index="1">violet</numIndex>
+                    </numIndex>
+                    <numIndex index="5" type="array">
+                      <numIndex index="0">Orange</numIndex>
+                      <numIndex index="1">orange</numIndex>
+                    </numIndex>
+                    <numIndex index="6" type="array">
+                      <numIndex index="0">Cyan</numIndex>
+                      <numIndex index="1">cyan</numIndex>
+                    </numIndex>
+                  </items>
+                </config>
+            </TCEforms>
+          </settings.color>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>

@@ -1,0 +1,29 @@
+<f:layout name="Default" />
+<f:section name="main">
+<f:debug>{event}</f:debug>
+
+<f:if condition="{event.images.secondimagepath}">
+    <f:then>
+        <div class="eventcover">
+            <h1 class="csc-firstHeader white">{event.title}</h1>
+            <f:image src="{event.images.secondimagepath}" alt="{event.title}" width="715px" />
+        </div>
+    </f:then>
+    <f:else>
+        <h1 class="csc-firstHeader">{event.title}</h1>
+    </f:else>
+</f:if>
+
+<f:format.html>{event.description}</f:format.html>
+
+<div class="categories">
+    <f:if condition="{event.categories -> f:count()} > 1">
+        <f:then>Gelistet in den Kategorien:</f:then>
+        <f:else>Gelistet in der Kategorie:</f:else>
+    </f:if>
+    <f:for each="{event.categories}" as="cat" iteration="i">
+        <f:if condition="{i.index} != 0">|</f:if> <f:link.page pageUid="{cat.own_pid}">{cat.title}</f:link.page>
+    </f:for>
+</div>
+
+</f:section>

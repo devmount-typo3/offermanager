@@ -1,0 +1,24 @@
+<f:debug>{debug}</f:debug>
+<f:layout name="Default" />
+<f:section name="main">
+
+<div class="offercount">{count}</div>
+<f:for each="{events}" as="event">
+    <div class="event">
+        <f:if condition="{event.images.firstimagepath}">
+            <f:image src="{event.images.firstimagepath}" alt="{event.title}" height="130px" />
+        </f:if>
+        <h2><f:link.page pageUid="73" additionalParams="{tx_cal_controller: '{uid: event.uid}'}">{event.title}</f:link.page></h2>
+        <div class="description">
+            <div class="teaser"><f:format.html>{event.teaser}</f:format.html></div>
+            <f:format.crop maxCharacters="200"><f:format.html>{event.description}</f:format.html></f:format.crop>
+            <div><f:link.page pageUid="73" additionalParams="{tx_cal_controller: '{uid: event.uid}'}" class="more">[mehr]</f:link.page></div>
+        </div>
+        <div class="categories">
+            <f:for each="{event.categories}" as="cat" iteration="i">
+                <f:if condition="{i.index} != 0">|</f:if> <f:link.page pageUid="{cat.own_pid}">{cat.title}</f:link.page>
+            </f:for>
+        </div>
+    </div>
+</f:for>
+</f:section>

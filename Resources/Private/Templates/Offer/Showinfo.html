@@ -1,0 +1,21 @@
+<f:debug>{event}</f:debug>
+<f:layout name="Default" />
+<f:section name="main">
+
+<f:if condition="{showinfo}">
+	<div class="eventinfo">
+		<f:if condition="{event.dates_description}">
+			<f:then>
+				<span class="prewrap">{event.dates_description}</span>
+			</f:then>
+			<f:else>
+				<f:format.date date="{event.start_date}" format="d.m.Y" />, {times.start} –
+				<f:if condition="{0:'{event.start_date}'} != {0:'{event.end_date}'}">
+					<br /><f:format.date format="d.m.Y">{event.end_date}</f:format.date>,
+				</f:if>{times.end}
+			</f:else>
+		</f:if>
+	</div>
+</f:if>
+
+</f:section>

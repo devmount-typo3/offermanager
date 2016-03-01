@@ -1,0 +1,13 @@
+<f:layout name="Default" />
+<f:section name="main">
+<div class="categorieslist">
+    <f:if condition="{categories}">
+        <ul>
+            <f:for each="{categories}" as="category">
+                <li><f:link.page pageUid="{category.own_pid}">{category.title}</f:link.page></li>
+            </f:for>
+        </ul>
+    </f:if>
+</div>
+
+</f:section>

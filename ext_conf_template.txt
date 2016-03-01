@@ -1,0 +1,2 @@
+# cat=config/general/1; type=int; label=UID des Kalenders für terminlose Angebote
+nocalender = 2

@@ -1,0 +1,44 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Anzeige</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <settings.heading>
+            <TCEforms>
+              <label>Überschrift</label>
+                <config>
+                   <type>input</type>
+                </config>
+            </TCEforms>
+          </settings.heading>
+          <settings.contact>
+            <TCEforms>
+              <label>Diesen Ansprechpartner anzeigen (Einstellung des Angebots überschreiben)</label>
+                <config>
+                  <type>select</type>
+                  <items type="array">
+                    <numIndex index="0" type="array">
+                      <numIndex index="0">—</numIndex>
+                      <numIndex index="1"></numIndex>
+                    </numIndex>
+                  </items>
+                  <foreign_table>tx_cal_organizer</foreign_table>
+                  <foreign_table_where>
+                     AND tx_cal_organizer.deleted = 0
+                     AND tx_cal_organizer.hidden = 0
+                  </foreign_table_where>
+                </config>
+            </TCEforms>
+          </settings.contact>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>

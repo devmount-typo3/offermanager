@@ -1,0 +1,37 @@
+<f:debug>{contact}</f:debug>
+<f:layout name="Default" />
+<f:section name="main">
+<div class="contact">
+    <f:if condition="{contact}">
+        <h2>
+            <f:if condition="{contact.organizer}">
+                <f:then>{contact.organizer}</f:then>
+                <f:else>
+                    <f:if condition="{heading}">
+                        <f:then>{heading}</f:then>
+                        <f:else>Ansprechpartner</f:else>
+                    </f:if>
+                </f:else>
+            </f:if>
+        </h2>
+        <div class="image">
+            <f:if condition="{contact.imagepath}">
+                <f:image src="{contact.imagepath}" alt="{contact.name}" height="210px" />
+            </f:if>
+        </div>
+        <div class="title">
+            <h3>{contact.name}</h3>
+            <f:if condition="{contact.email}">
+            	<f:link.email email="{contact.email}" title="Schreib {contact.name} eine Mail"><i class="fa fa-envelope"></i></f:link.email>
+            </f:if>
+            <f:if condition="{contact.facebook}">
+                <a href="https://facebook.com/{contact.facebook}" target="_blank" title="{contact.name} auf Facebook"><i class="fa fa-facebook-official"></i></a>
+            </f:if>
+            <f:if condition="{contact.twitter}">
+                <a href="https://twitter.com/{contact.twitter}" target="_blank" title="{contact.name} auf Twitter"><i class="fa fa-twitter"></i></a>
+            </f:if>
+        </div>
+    </f:if>
+</div>
+
+</f:section>

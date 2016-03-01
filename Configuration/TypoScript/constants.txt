@@ -1,0 +1,14 @@
+plugin.tx_offermanager {
+	view {
+		# cat=plugin.tx_offermanager/file; type=string; label=Path to template root (FE)
+		templateRootPath = EXT:offermanager/Resources/Private/Templates/
+		# cat=plugin.tx_offermanager/file; type=string; label=Path to template partials (FE)
+		partialRootPath = EXT:offermanager/Resources/Private/Partials/
+		# cat=plugin.tx_offermanager/file; type=string; label=Path to template layouts (FE)
+		layoutRootPath = EXT:offermanager/Resources/Private/Layouts/
+	}
+	persistence {
+		# cat=plugin.tx_offermanager//a; type=string; label=Default storage PID
+		storagePid =
+	}
+}

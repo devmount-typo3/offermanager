@@ -1,0 +1,12 @@
+config.tx_extbase{
+    persistence{
+        classes{
+            TYPO3\Offermanager\Domain\Model\Offer {
+                mapping {
+                    tableName = tx_cal_event
+                    recordType = Tx_Offermanager_Offer
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,74 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Anzeige</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+<!--           <settings.limit>
+            <TCEforms>
+              <label>Limit</label>
+                <config>
+                   <type>input</type>
+                </config>
+            </TCEforms>
+          </settings.limit> -->
+          <settings.category>
+            <TCEforms>
+            <label>Angebote einer Kategorie</label>
+            <config>
+              <type>select</type>
+              <items type="array">
+                <numIndex index="0" type="array">
+                  <numIndex index="0">—</numIndex>
+                  <numIndex index="1">—</numIndex>
+                </numIndex>
+              </items>
+              <foreign_table>tx_cal_category</foreign_table>
+              <foreign_table_where>
+                 AND tx_cal_category.deleted = 0
+                 AND tx_cal_category.hidden = 0
+              </foreign_table_where>
+            </config>
+            </TCEforms>
+          </settings.category>
+          <settings.limit>
+            <TCEforms>
+            <label>Angebote in der Übersicht anzeigen (für einzelne Kategorien werden immer alle Angebote angezeigt)</label>
+            <config>
+              <type>select</type>
+              <items type="array">
+                <numIndex index="0" type="array">
+                  <numIndex index="0">Alle</numIndex>
+                  <numIndex index="1">Alle</numIndex>
+                </numIndex>
+                <numIndex index="5" type="array">
+                  <numIndex index="0">5</numIndex>
+                  <numIndex index="1">5</numIndex>
+                </numIndex>
+                <numIndex index="10" type="array">
+                  <numIndex index="0">10</numIndex>
+                  <numIndex index="1">10</numIndex>
+                </numIndex>
+                <numIndex index="15" type="array">
+                  <numIndex index="0">15</numIndex>
+                  <numIndex index="1">15</numIndex>
+                </numIndex>
+                <numIndex index="20" type="array">
+                  <numIndex index="0">20</numIndex>
+                  <numIndex index="1">20</numIndex>
+                </numIndex>
+              </items>
+            </config>
+            </TCEforms>
+          </settings.limit>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>

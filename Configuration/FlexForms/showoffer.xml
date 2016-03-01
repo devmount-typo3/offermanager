@@ -1,0 +1,25 @@
+<T3DataStructure>
+  <meta>
+    <langDisable>1</langDisable>
+  </meta>
+  <sheets>
+    <sDEF>
+      <ROOT>
+        <TCEforms>
+          <sheetTitle>Anzeige</sheetTitle>
+        </TCEforms>
+        <type>array</type>
+        <el>
+          <settings.test>
+            <TCEforms>
+              <label>test</label>
+                <config>
+                   <type>input</type>
+                </config>
+            </TCEforms>
+          </settings.test>
+        </el>
+      </ROOT>
+    </sDEF>
+  </sheets>
+</T3DataStructure>
