@@ -141,11 +141,11 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     c.uid = ? AND
                     e.hidden = ? AND
                     e.deleted = ? AND
-                    e.freq <> ? AND
+                    (e.freq <> ? OR e.rdate <> ?) AND
                     e.calendar_id <> ?
                 ORDER BY
                     e.start_date ASC";
-            $query->statement($sql, array($cuid, 0, 0, 'none', $nocalender));
+            $query->statement($sql, array($cuid, 0, 0, 'none', 'null', $nocalender));
         }
         // display all events
         else {
@@ -170,13 +170,14 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                 WHERE
                     e.hidden = ? AND
                     e.deleted = ? AND
-                    e.freq <> ? AND
+                    (e.freq <> ? OR e.rdate <> ?) AND
                     e.calendar_id <> ? ?
                 ORDER BY
                     e.start_date ASC";
-            $query->statement($sql, array(0, 0, 'none', $nocalender, $limitSql));
+            $query->statement($sql, array(0, 0, 'none', 'null', $nocalender, $limitSql));
         }
         $result_repeated_temp = $query->execute();
+        
         // handle repeatance - check if repeatance is in future
         $result_repeated = array();
         foreach ($result_repeated_temp as $key => $event) {
@@ -189,10 +190,10 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             $count = $event['cnt'] > 0 ? $event['cnt'] : 99;
             $interval = $event['intrval'] > 1 ? $event['intrval'] : 1;
             for ($i=1; $i <= $count; $i++) {
-                $freqdate = date('Ymd', strtotime($event['start_date'] . ' + ' . $i*$interval . ' ' . $event['freq']));
-                if (($event['until'] and $event['until'] >= $freqdate) or !$event['until']) {
-                    $event['rdate'] = $event['rdate'] ? ',' . $freqdate : $freqdate;
-                }
+                $freqdate = date('Ymd', strtotime($event['start_date'] . ' +' . $i*$interval . ' ' . $event['freq']));
+                // if (($event['until'] and $event['until'] >= $freqdate) or !$event['until']) {
+                $event['rdate'] .= $event['rdate'] != null ? ',' . $freqdate : $freqdate;
+                // }
             }
             // check rdate
             if ($event['rdate']) {
@@ -203,13 +204,11 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
                     }
                 }
             }
-            // if no repeated date in future, continiue without adding event to list
-            if (!$nextdate) {
-                continue;
+            // if repeated date in future,add event to list
+            if ($nextdate) {
+                $event['start_date'] = $nextdate;
+                $result_repeated[] = $event;
             }
-            // add event
-            $event['start_date'] = $nextdate;
-            $result_repeated[] = $event;
         }
 
         // >> build query for no date offers
