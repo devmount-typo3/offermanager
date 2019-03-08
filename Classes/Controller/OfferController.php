@@ -111,10 +111,11 @@ class OfferController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 		// check single contact view
 		if ($this->settings['contact'] != '') {
 			$contact = $this->offerRepository->getContact($this->settings['contact']);
-		} else {
-			$cal = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP("tx_cal_controller");
-			$contact = $this->offerRepository->getContactFromEvent($cal['uid']);
-		}
+    }
+    // else {
+		// 	$cal = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP("tx_cal_controller");
+		// 	$contact = $this->offerRepository->getContactFromEvent($cal['uid']);
+		// }
 		$this->view->assign('contact', $contact);
 		$this->view->assign('heading', $this->settings['heading']);
 	}

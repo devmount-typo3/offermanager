@@ -492,24 +492,14 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array contact properties
      */
     public function getContact($uid) {
-        $sql =
-            "SELECT
-                o.uid,
-                o.name,
-                o.description,
-                o.email,
-                o.facebook,
-                o.twitter
-            FROM
-                tx_cal_organizer o
-            WHERE
-                o.uid = ?";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql, array($uid));
-        $result = $query->execute();
-        $contact = $result[0];
 
+        // get contact
+        $contact = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+          'uid,name,description,email,facebook,twitter',
+          'tx_cal_organizer',
+          'uid = ' . intval($uid)
+        );
+        
         // get image
         if ($contact) {
             $fileRepository = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\FileRepository');
