@@ -47,136 +47,162 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
         $nocalender = $conf['nocalender'];
         // get current date
         $date = date("Ymd");
-        // set limit
-        if ($limit > 0) {
-            $limitSql = 'LIMIT ' . $limit;
-        } else {
-            $limitSql = '';
-        }
 
-        // >> build query for single events
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
+        // >> handle single events
+        // $query = $this->createQuery();
+        // $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
         // display only category events
         if ($cuid >= 0) {
-            $sql =
-                "SELECT
-                    e.uid,
-                    e.start_date,
-                    e.end_date,
-                    e.start_time,
-                    e.end_time,
-                    e.title,
-                    e.teaser,
-                    e.description,
-                    e.dates_description
-                FROM
-                    tx_cal_event e
-                LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
-                LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
-                WHERE
-                    c.uid = ? AND
-                    e.hidden = ? AND
-                    e.deleted = ? AND
-                    e.freq = ? AND
-                    e.start_date >= ? AND
-                    e.calendar_id <> ?
-                ORDER BY
-                    e.start_date ASC";
-            $query->statement($sql, array($cuid, 0, 0, 'none', $date, $nocalender));
+            // $sql =
+            //     "SELECT
+            //         e.uid,
+            //         e.start_date,
+            //         e.end_date,
+            //         e.start_time,
+            //         e.end_time,
+            //         e.title,
+            //         e.teaser,
+            //         e.description,
+            //         e.dates_description
+            //     FROM
+            //         tx_cal_event e
+            //     LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
+            //     LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
+            //     WHERE
+            //         c.uid = ? AND
+            //         e.hidden = ? AND
+            //         e.deleted = ? AND
+            //         e.freq = ? AND
+            //         e.start_date >= ? AND
+            //         e.calendar_id <> ?
+            //     ORDER BY
+            //         e.start_date ASC";
+            // $query->statement($sql, array($cuid, 0, 0, 'none', $date, $nocalender));
+            // $result_single = $query->execute();
+            $result_single = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+              'e.uid,e.start_date,e.end_date,e.start_time,e.end_time,e.title,e.teaser,e.description,e.dates_description',
+              'tx_cal_event e LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign',
+              'c.uid = ' . intval($cuid) . ' AND e.hidden = 0 AND e.deleted = 0 AND e.freq = "none" AND e.start_date >= "' . $date . '" AND e.calendar_id <> ' . intval($nocalender),
+              '',
+              'e.start_date ASC'
+            );
         }
         // display all events
         else {
-            $sql =
-                "SELECT
-                    e.uid,
-                    e.start_date,
-                    e.end_date,
-                    e.start_time,
-                    e.end_time,
-                    e.title,
-                    e.teaser,
-                    e.description,
-                    e.dates_description
-                FROM
-                    tx_cal_event e
-                WHERE
-                    e.hidden = ? AND
-                    e.deleted = ? AND
-                    e.freq = ? AND
-                    e.start_date >= ? AND
-                    e.calendar_id <> ? ?
-                ORDER BY
-                    e.start_date ASC";
-            $query->statement($sql, array(0, 0, 'none', $date, $nocalender, $limitSql));
+            // $sql =
+            //     "SELECT
+            //         e.uid,
+            //         e.start_date,
+            //         e.end_date,
+            //         e.start_time,
+            //         e.end_time,
+            //         e.title,
+            //         e.teaser,
+            //         e.description,
+            //         e.dates_description
+            //     FROM
+            //         tx_cal_event e
+            //     WHERE
+            //         e.hidden = ? AND
+            //         e.deleted = ? AND
+            //         e.freq = ? AND
+            //         e.start_date >= ? AND
+            //         e.calendar_id <> ? ?
+            //     ORDER BY
+            //         e.start_date ASC";
+            // $query->statement($sql, array(0, 0, 'none', $date, $nocalender, $limitSql));
+            // $result_single = $query->execute();
+            $result_single = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+              'e.uid,e.start_date,e.end_date,e.start_time,e.end_time,e.title,e.teaser,e.description,e.dates_description',
+              'tx_cal_event e',
+              'e.hidden = 0 AND e.deleted = 0 AND e.freq = "none" AND e.start_date >= "' . $date . '" AND e.calendar_id <> ' . intval($nocalender),
+              '',
+              'e.start_date ASC',
+              ($limit > 0) ? $limit : ''
+            );
         }
-        $result_single = $query->execute();
 
-        // >> build query for repeated events
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
+        // >> handle repeated events
+        // $query = $this->createQuery();
+        // $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
         // display only category events
         if ($cuid >= 0) {
-            $sql =
-                "SELECT
-                    e.uid,
-                    e.start_date,
-                    e.end_date,
-                    e.start_time,
-                    e.end_time,
-                    e.title,
-                    e.teaser,
-                    e.description,
-                    e.dates_description,
-                    e.freq,
-                    e.until,
-                    e.cnt,
-                    e.intrval,
-                    e.rdate
-                FROM
-                    tx_cal_event e
-                LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
-                LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
-                WHERE
-                    c.uid = ? AND
-                    e.hidden = ? AND
-                    e.deleted = ? AND
-                    (e.freq <> ? OR e.rdate <> ?) AND
-                    e.calendar_id <> ?
-                ORDER BY
-                    e.start_date ASC";
-            $query->statement($sql, array($cuid, 0, 0, 'none', 'null', $nocalender));
+            // $sql =
+            //     "SELECT
+            //         e.uid,
+            //         e.start_date,
+            //         e.end_date,
+            //         e.start_time,
+            //         e.end_time,
+            //         e.title,
+            //         e.teaser,
+            //         e.description,
+            //         e.dates_description,
+            //         e.freq,
+            //         e.until,
+            //         e.cnt,
+            //         e.intrval,
+            //         e.rdate
+            //     FROM
+            //         tx_cal_event e
+            //     LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
+            //     LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
+            //     WHERE
+            //         c.uid = ? AND
+            //         e.hidden = ? AND
+            //         e.deleted = ? AND
+            //         (e.freq <> ? OR e.rdate <> ?) AND
+            //         e.calendar_id <> ?
+            //     ORDER BY
+            //         e.start_date ASC";
+            // $query->statement($sql, array($cuid, 0, 0, 'none', 'null', $nocalender));
+            // $result_repeated_temp = $query->execute();
+            $result_repeated_temp = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+              'e.uid,e.start_date,e.end_date,e.start_time,e.end_time,e.title,e.teaser,e.description,e.dates_description,e.freq,e.until,e.cnt,e.intrval,e.rdate',
+              'tx_cal_event e LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign',
+              'c.uid = ' . intval($cuid) . ' AND e.hidden = 0 AND e.deleted = 0 AND (e.freq <> "none" OR e.rdate <> "null") AND e.calendar_id <> ' . intval($nocalender),
+              '',
+              'e.start_date ASC'
+            );
         }
         // display all events
         else {
-            $sql =
-                "SELECT
-                    e.uid,
-                    e.start_date,
-                    e.end_date,
-                    e.start_time,
-                    e.end_time,
-                    e.title,
-                    e.teaser,
-                    e.description,
-                    e.dates_description,
-                    e.freq,
-                    e.until,
-                    e.cnt,
-                    e.intrval,
-                    e.rdate
-                FROM
-                    tx_cal_event e
-                WHERE
-                    e.hidden = ? AND
-                    e.deleted = ? AND
-                    (e.freq <> ? OR e.rdate <> ?) AND
-                    e.calendar_id <> ? ?
-                ORDER BY
-                    e.start_date ASC";
-            $query->statement($sql, array(0, 0, 'none', 'null', $nocalender, $limitSql));
+            // $sql =
+            //     "SELECT
+            //         e.uid,
+            //         e.start_date,
+            //         e.end_date,
+            //         e.start_time,
+            //         e.end_time,
+            //         e.title,
+            //         e.teaser,
+            //         e.description,
+            //         e.dates_description,
+            //         e.freq,
+            //         e.until,
+            //         e.cnt,
+            //         e.intrval,
+            //         e.rdate
+            //     FROM
+            //         tx_cal_event e
+            //     WHERE
+            //         e.hidden = ? AND
+            //         e.deleted = ? AND
+            //         (e.freq <> ? OR e.rdate <> ?) AND
+            //         e.calendar_id <> ? ?
+            //     ORDER BY
+            //         e.start_date ASC";
+            // $query->statement($sql, array(0, 0, 'none', 'null', $nocalender, $limitSql));
+            // $result_repeated_temp = $query->execute();
+            $result_repeated_temp = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+              'e.uid,e.start_date,e.end_date,e.start_time,e.end_time,e.title,e.teaser,e.description,e.dates_description,e.freq,e.until,e.cnt,e.intrval,e.rdate',
+              'tx_cal_event e',
+              'e.hidden = 0 AND e.deleted = 0 AND (e.freq <> "none" OR e.rdate <> "null") AND e.calendar_id <> ' . intval($nocalender),
+              '',
+              'e.start_date ASC',
+              ($limit > 0) ? $limit : ''
+            );
         }
-        $result_repeated_temp = $query->execute();
         
         // handle repeatance - check if repeatance is in future
         $result_repeated = array();
@@ -211,55 +237,69 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
             }
         }
 
-        // >> build query for no date offers
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
+        // >> handle no date offers
+        // $query = $this->createQuery();
+        // $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
         // display only category events
         if ($cuid >= 0) {
-            $sql =
-                "SELECT
-                    e.uid,
-                    e.start_date,
-                    e.end_date,
-                    e.start_time,
-                    e.end_time,
-                    e.title,
-                    e.teaser,
-                    e.description,
-                    e.dates_description
-                FROM
-                    tx_cal_event e
-                LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
-                LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
-                WHERE
-                    c.uid = ? AND
-                    e.hidden = ? AND
-                    e.deleted = ? AND
-                    e.calendar_id = ? ";
-            $query->statement($sql, array($cuid, 0, 0, $nocalender));
+            // $sql =
+            //     "SELECT
+            //         e.uid,
+            //         e.start_date,
+            //         e.end_date,
+            //         e.start_time,
+            //         e.end_time,
+            //         e.title,
+            //         e.teaser,
+            //         e.description,
+            //         e.dates_description
+            //     FROM
+            //         tx_cal_event e
+            //     LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
+            //     LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
+            //     WHERE
+            //         c.uid = ? AND
+            //         e.hidden = ? AND
+            //         e.deleted = ? AND
+            //         e.calendar_id = ? ";
+            // $query->statement($sql, array($cuid, 0, 0, $nocalender));
+            // $result_nodate = $query->execute();
+            $result_nodate = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+              'e.uid,e.start_date,e.end_date,e.start_time,e.end_time,e.title,e.teaser,e.description,e.dates_description',
+              'tx_cal_event e LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign',
+              'c.uid = ' . intval($cuid) . ' AND e.hidden = 0 AND e.deleted = 0 AND e.calendar_id = ' . intval($nocalender)
+            );
         }
         // display all events
         else {
-            $sql =
-                "SELECT
-                    e.uid,
-                    e.start_date,
-                    e.end_date,
-                    e.start_time,
-                    e.end_time,
-                    e.title,
-                    e.teaser,
-                    e.description,
-                    e.dates_description
-                FROM
-                    tx_cal_event e
-                WHERE
-                    e.hidden = ? AND
-                    e.deleted = ? AND
-                    e.calendar_id = ? ? ";
-            $query->statement($sql, array(0, 0, $nocalender, $limitSql));
+            // $sql =
+            //     "SELECT
+            //         e.uid,
+            //         e.start_date,
+            //         e.end_date,
+            //         e.start_time,
+            //         e.end_time,
+            //         e.title,
+            //         e.teaser,
+            //         e.description,
+            //         e.dates_description
+            //     FROM
+            //         tx_cal_event e
+            //     WHERE
+            //         e.hidden = ? AND
+            //         e.deleted = ? AND
+            //         e.calendar_id = ? ? ";
+            // $query->statement($sql, array(0, 0, $nocalender, $limitSql));
+            // $result_nodate = $query->execute();
+            $result_nodate = $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+              'e.uid,e.start_date,e.end_date,e.start_time,e.end_time,e.title,e.teaser,e.description,e.dates_description',
+              'tx_cal_event e',
+              'e.hidden = 0 AND e.deleted = 0 AND e.calendar_id = ' . intval($nocalender),
+              '',
+              '',
+              ($limit > 0) ? $limit : ''
+            );
         }
-        $result_nodate = $query->execute();
 
         // get complete result and sort by next occuring date
         $result = array_merge($result_single, $result_repeated);
@@ -281,49 +321,19 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
 
 
     /**
-     * returns name of given category
-     *
-     * @param  integer $uid uid of cal category
-     *
-     * @return string name of category
-     */
-    public function getCategoryName($uid) {
-        $sql = "SELECT title FROM tx_cal_category WHERE uid = ?";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql, array($uid));
-        $result = $query->execute();
-        return $result[0]['title'];
-    }
-
-    /**
-     * returns pid of given category
-     *
-     * @param  integer $uid uid of cal category
-     *
-     * @return integer pid of category
-     */
-    public function getCategoryPage($uid) {
-        $sql = "SELECT own_pid FROM tx_cal_category WHERE uid = ?";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql, array($uid));
-        $result = $query->execute();
-        return $result[0]['own_pid'];
-    }
-
-    /**
      * returns list of existing categories
      *
      * @return array of categories
      */
     public function getCategoryList() {
-        $sql = "SELECT title, own_pid FROM tx_cal_category WHERE deleted = 0 AND hidden = 0 ORDER BY sorting ASC";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql);
-        $result = $query->execute();
-        return $result;
+        // get categories
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+          'title, own_pid',
+          'tx_cal_category',
+          'deleted = 0 AND hidden = 0',
+          '',
+          'sorting ASC'
+        );
     }
 
     /**
@@ -369,7 +379,6 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array category names
      */
     public function getEventCategories($uid) {
-
         // get categories
         return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
           'c.uid,c.title,c.own_pid',
@@ -386,7 +395,6 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array event properties
      */
     public function getEvent($uid) {
-
         // get event
         $event = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
           'uid,start_date,end_date,start_time,end_time,title,teaser,description,dates_description,calendar_id,organizer,freq,until,cnt,intrval,rdate',
@@ -415,8 +423,7 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array contact properties
      */
     public function getContactFromEvent($uid) {
-
-        // get contact
+        // get contact from event
         $contact = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
           'o.uid,o.name,o.email,o.facebook,o.twitter, e.organizer',
           'tx_cal_organizer o INNER JOIN tx_cal_event e ON o.uid = e.organizer_id',
@@ -451,7 +458,6 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array contact properties
      */
     public function getContact($uid) {
-
         // get contact
         $contact = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
           'uid,name,description,email,facebook,twitter',
