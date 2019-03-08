@@ -369,22 +369,13 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array category names
      */
     public function getEventCategories($uid) {
-        $sql =
-            "SELECT
-                c.uid,
-                c.title,
-                c.own_pid
-            FROM
-                tx_cal_event e
-            LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local
-            LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign
-            WHERE
-                e.uid = ?";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql, array($uid));
-        $result = $query->execute();
-        return $result;
+
+        // get categories
+        return $GLOBALS['TYPO3_DB']->exec_SELECTgetRows(
+          'c.uid,c.title,c.own_pid',
+          'tx_cal_event e LEFT JOIN tx_cal_event_category_mm m ON e.uid = m.uid_local LEFT JOIN tx_cal_category c ON c.uid = m.uid_foreign',
+          'e.uid = ' . intval($uid)
+        );
     }
 
     /**
@@ -395,34 +386,13 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array event properties
      */
     public function getEvent($uid) {
-        $sql =
-            "SELECT
-                e.uid,
-                e.start_date,
-                e.end_date,
-                e.start_time,
-                e.end_time,
-                e.title,
-                e.teaser,
-                e.description,
-                e.dates_description,
-                e.calendar_id,
-                e.organizer,
-                e.freq,
-                e.until,
-                e.cnt,
-                e.intrval,
-                e.rdate
-            FROM
-                tx_cal_event e
-            WHERE
-                e.uid = ?";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql, array($uid));
-        $result = $query->execute();
 
-        $event = $result[0];
+        // get event
+        $event = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+          'uid,start_date,end_date,start_time,end_time,title,teaser,description,dates_description,calendar_id,organizer,freq,until,cnt,intrval,rdate',
+          'tx_cal_event',
+          'uid = ' . intval($uid)
+        );
 
         $categories = $this->getEventCategories($uid);
         $images = $this->getEventImages($uid);
@@ -445,24 +415,13 @@ class OfferRepository extends \TYPO3\CMS\Extbase\Persistence\Repository {
      * @return array contact properties
      */
     public function getContactFromEvent($uid) {
-        $sql =
-            "SELECT
-                o.uid,
-                o.name,
-                o.email,
-                o.facebook,
-                o.twitter,
-                e.organizer
-            FROM
-                tx_cal_organizer o
-            INNER JOIN tx_cal_event e ON o.uid = e.organizer_id
-            WHERE
-                e.uid = ?";
-        $query = $this->createQuery();
-        $query->getQuerySettings()->setReturnRawQueryResult(TRUE);
-        $query->statement($sql, array($uid));
-        $result = $query->execute();
-        $contact = $result[0];
+
+        // get contact
+        $contact = $GLOBALS['TYPO3_DB']->exec_SELECTgetSingleRow(
+          'o.uid,o.name,o.email,o.facebook,o.twitter, e.organizer',
+          'tx_cal_organizer o INNER JOIN tx_cal_event e ON o.uid = e.organizer_id',
+          'e.uid = ' . intval($uid)
+        );
 
         // get image
         if ($contact) {
