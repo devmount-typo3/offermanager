@@ -89,8 +89,8 @@ class OfferController extends \TYPO3\CMS\Extbase\Mvc\Controller\ActionController
 	public function showinfoAction() {
 		$cal = \TYPO3\CMS\Core\Utility\GeneralUtility::_GP("tx_cal_controller");
 		$event = $this->offerRepository->getEvent($cal['uid']);
-        $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['offermanager']);
-        $nocalender = $conf['nocalender'];
+    $conf = unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['offermanager']);
+    $nocalender = $conf['nocalender'];
 		$this->view->assign('event', $event);
 		$this->view->assign('showinfo', $event['calendar_id'] != $nocalender);
 		$this->view->assign(
